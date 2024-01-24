@@ -1,33 +1,23 @@
-// const person: {
-//   name: string;
-//   age: number;
-//   hobbies: string[];
-//   role: [number, string];
-// } = {
-var Role;
-(function (Role) {
-    Role[Role["ADMIN"] = 0] = "ADMIN";
-    Role[Role["RO"] = 1] = "RO";
-    Role[Role["AUTHOR"] = 2] = "AUTHOR";
-})(Role || (Role = {}));
-var person = {
-    name: "Santiago",
-    age: 26,
-    hobbies: ["coding", "gym"],
-    role: Role.ADMIN,
-};
-// person.role.push("admin");
-// person.role[1] = 10;
-// person.role = [0, "admin"];
-var favoriteActivities;
-var other;
-favoriteActivities = ["a"];
-favoriteActivities.push("b");
-console.log(person);
-for (var _i = 0, _a = person.hobbies; _i < _a.length; _i++) {
-    var h = _a[_i];
-    console.log(h);
+function combine(i1, i2, resultConversion) {
+    var res;
+    //with union types you must check types
+    if (typeof i1 === "number" && typeof i2 === "number") {
+        res = i1 + i2;
+    }
+    else {
+        res = i1.toString() + i2.toString();
+    }
+    if (resultConversion === "as-number") {
+        return +res;
+    }
+    else {
+        return res.toString();
+    }
+    return res;
 }
-if (person.role === Role.AUTHOR) {
-    console.log("author");
-}
+var combinedAges = combine(30, 26, "as-number");
+var combinedStringAges = combine("30", "26", "as-number");
+console.log(combinedStringAges);
+console.log(combinedAges);
+var combinedNames = combine("santiago", "morales", "as-txt");
+console.log(combinedNames);
