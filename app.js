@@ -1,19 +1,15 @@
-//let typescript infer type return
-function add(n1, n2) {
-    return n1 + n2;
+"use strict";
+// unkown better than any
+//makes sure you aren't allowed to do anything
+let userInput;
+let username;
+userInput = 5;
+userInput = "max";
+if (typeof userInput === "string")
+    username = userInput;
+//never returns
+function generateError(message, code) {
+    throw { message: message, errorCode: code };
 }
-function printResult(num) {
-    console.log("result:" + num);
-}
-printResult(add(5, 12));
-function addAndHandle(n1, n2, cb) {
-    var res = n1 + n2;
-    cb(res);
-}
-var combineValues;
-combineValues = add;
-console.log(combineValues(8, 8));
-// combineValues = printResult
-addAndHandle(10, 20, function (res) {
-    console.log(res);
-});
+const res = generateError("errror", 500);
+console.log(res);
