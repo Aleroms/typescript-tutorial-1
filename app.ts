@@ -1,4 +1,4 @@
-class Department {
+abstract class Department {
   //readonly exists only in typescript
   //private readonly id: string;
   static fiscalYear = 2020;
@@ -7,9 +7,8 @@ class Department {
   constructor(private readonly id: string, public name: string) {}
   //this is a hint to what this.name is
   //refers to instance
-  describe(this: Department) {
-    console.log("Department", this.name);
-  }
+  abstract describe(this: Department): void;
+
   addEmployee(emp: string) {
     this.employees.push(emp);
   }
@@ -23,6 +22,9 @@ class Department {
 class ITDepartment extends Department {
   admins: string[];
 
+  describe() {
+    console.log(this.name);
+  }
   get recentAdmins() {
     if (this.admins.length > 0) {
       return this.admins;
@@ -42,20 +44,16 @@ class ITDepartment extends Department {
   }
 }
 
-const accounting = new Department("1", "Accounting");
+//abstract classes cannot be instantiated
 const it = new ITDepartment("d2", ["max", "tom"]);
 it.describe();
 it.newAdmins = "setter";
 console.log(it.recentAdmins);
 console.log(it.recentAdmins);
-accounting.addEmployee("max");
-accounting.addEmployee("manu");
+// accounting.addEmployee("max");
+// accounting.addEmployee("manu");
 //vanilla javascript does not support private
 // accounting.employees[3] = "s";
-console.log(accounting);
-accounting.describe();
-accounting.printEmployeeInfo();
 //need this property.
-const accountingCopy = { name: "s", describe: accounting.describe };
 // accountingCopy.describe();
-console.log(Department.fiscalYear)
+console.log(Department.fiscalYear);

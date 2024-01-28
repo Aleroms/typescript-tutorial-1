@@ -20,11 +20,6 @@ var Department = /** @class */ (function () {
         this.name = name;
         this.employees = [];
     }
-    //this is a hint to what this.name is
-    //refers to instance
-    Department.prototype.describe = function () {
-        console.log("Department", this.name);
-    };
     Department.prototype.addEmployee = function (emp) {
         this.employees.push(emp);
     };
@@ -46,6 +41,9 @@ var ITDepartment = /** @class */ (function (_super) {
         _this.admins = admin;
         return _this;
     }
+    ITDepartment.prototype.describe = function () {
+        console.log(this.name);
+    };
     Object.defineProperty(ITDepartment.prototype, "recentAdmins", {
         get: function () {
             if (this.admins.length > 0) {
@@ -69,20 +67,16 @@ var ITDepartment = /** @class */ (function (_super) {
     };
     return ITDepartment;
 }(Department));
-var accounting = new Department("1", "Accounting");
+//abstract classes cannot be instantiated
 var it = new ITDepartment("d2", ["max", "tom"]);
 it.describe();
 it.newAdmins = "setter";
 console.log(it.recentAdmins);
 console.log(it.recentAdmins);
-accounting.addEmployee("max");
-accounting.addEmployee("manu");
+// accounting.addEmployee("max");
+// accounting.addEmployee("manu");
 //vanilla javascript does not support private
 // accounting.employees[3] = "s";
-console.log(accounting);
-accounting.describe();
-accounting.printEmployeeInfo();
 //need this property.
-var accountingCopy = { name: "s", describe: accounting.describe };
 // accountingCopy.describe();
 console.log(Department.fiscalYear);
