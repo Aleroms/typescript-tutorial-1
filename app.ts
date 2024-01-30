@@ -1,82 +1,95 @@
-//generic type
-// const names: Array<string> = [];
-
-// const promise: Promise<string> = new Promise((res, rej) => {
-//   setTimeout(() => {
-//     res("done");
-//   }, 2000);
-// });
-//better type safety with generic types
-
-//creating generic types
-//creating constraints
-function merge<T extends object, U extends object>(objA: T, objB: U) {
-  return { ...objA, ...objB };
-}
-// const mergeObj = merge({ name: "max" }, { age: 19 });
-const mergeObj = merge({ name: "max" }, { age: 30 });
-console.log(mergeObj);
-
-interface Lengthy {
-  length: number;
+function Logger(logString: string) {
+  console.log('LOGGER FACTORY');
+  return function(constructor: Function) {
+    console.log(logString);
+    console.log(constructor);
+  };
 }
 
-function countAndDescribe<T extends Lengthy>(element: T): [T, string] {
-  let desc = "Got no values";
-  if (element.length > 0) {
-    desc = "got" + element.length + " elements";
+function WithTemplate(template: string, hookId: string) {
+  console.log('TEMPLATE FACTORY');
+  return function(constructor: any) {
+    console.log('Rendering template');
+    const hookEl = document.getElementById(hookId);
+    const p = new constructor();
+    if (hookEl) {
+      hookEl.innerHTML = template;
+      hookEl.querySelector('h1')!.textContent = p.name;
+    }
+  };
+}
+
+// @Logger('LOGGING - PERSON')
+@Logger('LOGGING')
+@WithTemplate('<h1>My Person Object</h1>', 'app')
+class Person {
+  name = 'Max';
+
+  constructor() {
+    console.log('Creating person object...');
   }
-  return [element, desc];
 }
-console.log(countAndDescribe("Hi there"));
 
-//keyof contraints - ensures structure of T
-function extractAndConvert<T extends object, U extends keyof T>(
-  obj: T,
-  key: U
+const pers = new Person();
+
+console.log(pers);
+
+// ---
+
+function Log(target: any, propertyName: string | Symbol) {
+  console.log('Property decorator!');
+  console.log(target, propertyName);
+}
+
+function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
+  console.log('Accessor decorator!');
+  console.log(target);
+  console.log(name);
+  console.log(descriptor);
+}
+
+function Log3(
+  target: any,
+  name: string | Symbol,
+  descriptor: PropertyDescriptor
 ) {
-  return "value" + obj[key];
+  console.log('Method decorator!');
+  console.log(target);
+  console.log(name);
+  console.log(descriptor);
 }
-extractAndConvert({ name: "max" }, "name");
 
-//generic classes
-class DataStorage<T extends string | number | boolean> {
-  private data: T[] = [];
-
-  addItem(item: T) {
-    this.data.push(item);
-  }
-  removeItem(item: T) {
-    this.data.splice(this.data.indexOf(item), 1);
-  }
-  getItems() {
-    return [...this.data];
-  }
+function Log4(target: any, name: string | Symbol, position: number) {
+  console.log('Parameter decorator!');
+  console.log(target);
+  console.log(name);
+  console.log(position);
 }
-const t1 = new DataStorage<string>();
-t1.addItem("max");
-t1.addItem("a");
-t1.removeItem("a");
-//flexible but strongly typed
-const n1 = new DataStorage<number>();
 
-interface CourseGoal {
+class Product {
+  @Log
   title: string;
-  description: string;
-  completeUntil: Date;
+  private _price: number;
+
+  @Log2
+  set price(val: number) {
+    if (val > 0) {
+      this._price = val;
+    } else {
+      throw new Error('Invalid price - should be positive!');
+    }
+  }
+
+  constructor(t: string, p: number) {
+    this.title = t;
+    this._price = p;
+  }
+
+  @Log3
+  getPriceWithTax(@Log4 tax: number) {
+    return this._price * (1 + tax);
+  }
 }
 
-function CreateCourseGoal(
-  title: string,
-  description: string,
-  date: Date
-): CourseGoal {
-  let course: Partial<CourseGoal> = {};
-  course.title = title;
-  course.description = description;
-  course.completeUntil = date;
-  return course as CourseGoal;
-}
-
-const names: Readonly<string[]> = ["max", "mil"];
-// names.push('') // throws errors
+const p1 = new Product('Book', 19);
+const p2 = new Product('Book 2', 29);

@@ -1,81 +1,94 @@
 "use strict";
-//generic type
-// const names: Array<string> = [];
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+function Logger(logString) {
+    console.log('LOGGER FACTORY');
+    return function (constructor) {
+        console.log(logString);
+        console.log(constructor);
+    };
+}
+function WithTemplate(template, hookId) {
+    console.log('TEMPLATE FACTORY');
+    return function (constructor) {
+        console.log('Rendering template');
+        const hookEl = document.getElementById(hookId);
+        const p = new constructor();
+        if (hookEl) {
+            hookEl.innerHTML = template;
+            hookEl.querySelector('h1').textContent = p.name;
+        }
+    };
+}
+// @Logger('LOGGING - PERSON')
+let Person = class Person {
+    constructor() {
+        this.name = 'Max';
+        console.log('Creating person object...');
+    }
+};
+Person = __decorate([
+    Logger('LOGGING'),
+    WithTemplate('<h1>My Person Object</h1>', 'app')
+], Person);
+const pers = new Person();
+console.log(pers);
+// ---
+function Log(target, propertyName) {
+    console.log('Property decorator!');
+    console.log(target, propertyName);
+}
+function Log2(target, name, descriptor) {
+    console.log('Accessor decorator!');
+    console.log(target);
+    console.log(name);
+    console.log(descriptor);
+}
+function Log3(target, name, descriptor) {
+    console.log('Method decorator!');
+    console.log(target);
+    console.log(name);
+    console.log(descriptor);
+}
+function Log4(target, name, position) {
+    console.log('Parameter decorator!');
+    console.log(target);
+    console.log(name);
+    console.log(position);
+}
+class Product {
+    set price(val) {
+        if (val > 0) {
+            this._price = val;
+        }
+        else {
+            throw new Error('Invalid price - should be positive!');
         }
     }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-// const promise: Promise<string> = new Promise((res, rej) => {
-//   setTimeout(() => {
-//     res("done");
-//   }, 2000);
-// });
-//better type safety with generic types
-//creating generic types
-//creating constraints
-function merge(objA, objB) {
-    return __assign(__assign({}, objA), objB);
-}
-// const mergeObj = merge({ name: "max" }, { age: 19 });
-var mergeObj = merge({ name: "max" }, { age: 30 });
-console.log(mergeObj);
-function countAndDescribe(element) {
-    var desc = "Got no values";
-    if (element.length > 0) {
-        desc = "got" + element.length + " elements";
+    constructor(t, p) {
+        this.title = t;
+        this._price = p;
     }
-    return [element, desc];
-}
-console.log(countAndDescribe("Hi there"));
-//keyof contraints - ensures structure of T
-function extractAndConvert(obj, key) {
-    return "value" + obj[key];
-}
-extractAndConvert({ name: "max" }, "name");
-//generic classes
-var DataStorage = /** @class */ (function () {
-    function DataStorage() {
-        this.data = [];
+    getPriceWithTax(tax) {
+        return this._price * (1 + tax);
     }
-    DataStorage.prototype.addItem = function (item) {
-        this.data.push(item);
-    };
-    DataStorage.prototype.removeItem = function (item) {
-        this.data.splice(this.data.indexOf(item), 1);
-    };
-    DataStorage.prototype.getItems = function () {
-        return __spreadArray([], this.data, true);
-    };
-    return DataStorage;
-}());
-var t1 = new DataStorage();
-t1.addItem("max");
-t1.addItem("a");
-t1.removeItem("a");
-//flexible but strongly typed
-var n1 = new DataStorage();
-function CreateCourseGoal(title, description, date) {
-    var course = {};
-    course.title = title;
-    course.description = description;
-    course.completeUntil = date;
-    return course;
 }
-var names = ["max", "mil"];
-// names.push('') // throws errors
+__decorate([
+    Log
+], Product.prototype, "title", void 0);
+__decorate([
+    Log2
+], Product.prototype, "price", null);
+__decorate([
+    Log3,
+    __param(0, Log4)
+], Product.prototype, "getPriceWithTax", null);
+const p1 = new Product('Book', 19);
+const p2 = new Product('Book 2', 29);
